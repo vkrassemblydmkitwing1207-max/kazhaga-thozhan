@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ta">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>கழகத் தோழன் | Admin Dashboard</title>
+<style>
+:root{--red:#b51222;--ink:#171923;--muted:#69707d;--line:#e5e7eb;--bg:#f4f5f7}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans Tamil",sans-serif}
+header{background:var(--red);color:#fff;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+header h1{font-size:21px;margin:0}header small{opacity:.9}.wrap{max-width:1100px;margin:22px auto;padding:0 14px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 3px 14px #1018280a}
+.login{max-width:440px;margin:8vh auto}.hidden{display:none!important}
+label{display:block;font-weight:650;margin:12px 0 6px}input,textarea{width:100%;padding:12px;border:1px solid #cfd4dc;border-radius:10px;font:inherit;background:#fff}textarea{min-height:115px;resize:vertical}
+button{border:0;border-radius:10px;padding:11px 15px;background:var(--red);color:#fff;font:inherit;font-weight:650;cursor:pointer}
+button.secondary{background:#eef0f3;color:#252a34}button.danger{background:#991b1b}button:disabled{opacity:.55;cursor:not-allowed}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.muted{color:var(--muted)}.msg{margin-top:12px;padding:10px;border-radius:9px;background:#fff3e7;color:#704214;white-space:pre-wrap}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.tabs button{background:#e8eaf0;color:#242936}.tabs button.active{background:var(--red);color:#fff}
+.grid{display:grid;grid-template-columns: minmax(0,1fr) minmax(280px,.85fr);gap:16px}
+.item{border:1px solid var(--line);padding:13px;border-radius:12px;margin:9px 0;overflow-wrap:anywhere}
+.item h3{margin:0 0 5px;font-size:17px}.item p{margin:5px 0;white-space:pre-wrap}.actions{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+.actions button{padding:8px 11px;font-size:14px}.topline{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.note{font-size:13px;color:var(--muted);line-height:1.55}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.wrap{margin:14px auto}header h1{font-size:18px}}
+</style>
+</head>
+<body>
+<header><div><h1>கழகத் தோழன்</h1><small>நிர்வாகக் கட்டுப்பாட்டு மையம்</small></div><button id="logoutBtn" class="secondary hidden">வெளியேறு</button></header>
+<main class="wrap">
+<section id="loginPanel" class="panel login">
+<h2>நிர்வாகி உள்நுழைவு</h2>
+<form id="loginForm">
+<label for="email">Email</label><input id="email" type="email" autocomplete="username" required>
+<label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required>
+<p><button type="submit">உள்நுழை</button></p>
+</form><div id="loginMsg" class="msg hidden"></div>
+<p class="note">Firebase Authentication-ல் ஏற்கெனவே உருவாக்கிய நிர்வாகி கணக்கைப் பயன்படுத்தவும்.</p>
+</section>
+
+<section id="dashboard" class="hidden">
+<div class="panel topline"><div><h2 style="margin:0">Admin Dashboard</h2><span id="who" class="muted"></span></div><span class="muted">Firebase Firestore</span></div>
+<nav class="tabs" id="tabs">
+<button data-kind="news" class="active">செய்திகள்</button>
+<button data-kind="announcements">அறிவிப்புகள்</button>
+<button data-kind="administrators">நிர்வாகிகள்</button>
+<button data-kind="members">உறுப்பினர்கள்</button>
+<button data-kind="users">பயனர்கள்</button>
+</nav>
+<div id="status" class="msg hidden"></div>
+<div class="grid">
+<section class="panel" id="editorPanel">
+<h2 id="formHeading">செய்தி சேர்க்க</h2>
+<form id="dataForm">
+<div id="fields"></div>
+<div class="row" style="margin-top:14px"><button type="submit" id="saveBtn">சேமி</button><button type="button" class="secondary" id="cancelBtn">புதிய பதிவு</button></div>
+</form>
+<p class="note" id="formNote"></p>
+</section>
+<section class="panel">
+<div class="topline"><h2 id="listHeading" style="margin:0">செய்திகள்</h2><button class="secondary" id="refreshBtn">புதுப்பி</button></div>
+<div id="records" aria-live="polite"></div>
+</section>
+</div>
+</section>
+</main>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+import { getFirestore, doc, getDoc, collection, addDoc, getDocs, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD9DCYS2sY2i3Dwjm9C4bvJ43YpiHufUNI",
+  authDomain: "kazhaga-thozhan.firebaseapp.com",
+  databaseURL: "https://kazhaga-thozhan-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "kazhaga-thozhan",
+  storageBucket: "kazhaga-thozhan.firebasestorage.app",
+  messagingSenderId: "646030169026",
+  appId: "1:646030169026:web:4e6b38f66774198802fc5b",
+  measurementId: "G-SL6RH7JM3Q"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const $ = id => document.getElementById(id);
+const loginPanel=$("loginPanel"), dashboard=$("dashboard"), loginMsg=$("loginMsg"), status=$("status");
+let currentKind="news", editingId=null, currentUser=null;
+
+const schemas = {
+ news:{title:"செய்திகள்",fields:[["title","தலைப்பு","text",true],["content","செய்தி விவரம்","textarea",true],["imageUrl","புகைப்பட URL (விருப்பம்)","url",false]]},
+ announcements:{title:"அறிவிப்புகள்",fields:[["title","அறிவிப்பு தலைப்பு","text",true],["content","அறிவிப்பு விவரம்","textarea",true]]},
+ administrators:{title:"நிர்வாகிகள்",fields:[["name","பெயர்","text",true],["role","பதவி","text",true],["phone","தொலைபேசி","tel",false],["photoUrl","புகைப்பட URL (விருப்பம்)","url",false]]},
+ members:{title:"உறுப்பினர் சேர்க்கை",fields:[["name","உறுப்பினர் பெயர்","text",true],["phone","தொலைபேசி எண்","tel",true],["area","ஊர் / பகுதி","text",false]]},
+ users:{title:"பயனர்கள்",fields:[]}
+};
+
+function showMessage(el,msg){el.textContent=msg;el.classList.remove("hidden")}
+function hideMessage(el){el.textContent="";el.classList.add("hidden")}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function fieldsFor(kind){
+ const holder=$("fields"); holder.innerHTML="";
+ for(const [name,label,type,required] of schemas[kind].fields){
+   const lab=document.createElement("label");lab.htmlFor="f_"+name;lab.textContent=label;holder.append(lab);
+   const input=type==="textarea"?document.createElement("textarea"):document.createElement("input");
+   input.id="f_"+name;input.name=name;input.type=type==="textarea"?"text":type;input.required=required;
+   holder.append(input);
+ }
+ $("editorPanel").classList.toggle("hidden",kind==="users");
+ $("formNote").textContent=kind==="members"?"உறுப்பினர் தகவல்கள் நிர்வாகி மட்டுமே சேர்க்க / திருத்த / நீக்க முடியும்.":kind==="users"?"இந்தப் பட்டியல் Firestore users பதிவுகளை மட்டுமே காட்டும். Authentication கணக்குகளை மாற்றாது.":"புகைப்பட URL மட்டும் இங்கு சேமிக்கப்படுகிறது; புகைப்படப் பதிவேற்ற வசதியை அடுத்த கட்டத்தில் இணைப்போம்.";
+ $("formHeading").textContent=editingId?"பதிவைத் திருத்து":schemas[kind].title+" சேர்க்க";
+ $("listHeading").textContent=schemas[kind].title;
+ $("saveBtn").textContent=editingId?"மாற்றத்தைச் சேமி":"சேமி";
+}
+function formData(){const data={};for(const [name] of schemas[currentKind].fields){data[name]=$("f_"+name).value.trim()}return data}
+function fillForm(data){for(const [name] of schemas[currentKind].fields){$("f_"+name).value=data[name]??""}}
+function resetForm(){editingId=null;$("dataForm").reset();fieldsFor(currentKind)}
+function switchKind(kind){
+ currentKind=kind;editingId=null;
+ document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("active",b.dataset.kind===kind));
+ fieldsFor(kind);loadRecords();
+}
+async function loadRecords(){
+ hideMessage(status);$("records").innerHTML="<p class='muted'>ஏற்றுகிறது...</p>";
+ try{
+  const snap=await getDocs(collection(db,currentKind));
+  const rows=snap.docs.map(d=>({id:d.id,...d.data()}));
+  rows.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  if(!rows.length){$("records").innerHTML="<p class='muted'>பதிவுகள் எதுவும் இல்லை.</p>";return}
+  $("records").innerHTML=rows.map(r=>{
+    const title=r.title||r.name||r.email||r.id;
+    const detail=r.content||r.role||r.area||r.phone||"";
+    return `<article class="item"><h3>${esc(title)}</h3><p>${esc(detail)}</p><small class="muted">ID: ${esc(r.id)}</small><div class="actions">${currentKind==="users"?"":`<button class="secondary" data-edit="${esc(r.id)}">திருத்து</button>`}<button class="danger" data-delete="${esc(r.id)}">நீக்கு</button></div></article>`;
+  }).join("");
+ }catch(e){$("records").innerHTML="";showMessage(status,"தரவுகளைப் பெற முடியவில்லை: "+e.message)}
+}
+$("loginForm").addEventListener("submit",async e=>{
+ e.preventDefault();hideMessage(loginMsg);
+ try{await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value)}
+ catch(err){showMessage(loginMsg,"உள்நுழைவு தோல்வி: "+err.message)}
+});
+onAuthStateChanged(auth,async user=>{
+ currentUser=user;
+ if(!user){loginPanel.classList.remove("hidden");dashboard.classList.add("hidden");$("logoutBtn").classList.add("hidden");return}
+ try{
+  const adminSnap=await getDoc(doc(db,"Admins",user.uid));
+  if(!adminSnap.exists()||adminSnap.data().role!=="admin"){await signOut(auth);showMessage(loginMsg,"இந்தக் கணக்கிற்கு Admin அனுமதி இல்லை. Firebase Admin UID மற்றும் role='admin' என்பதைச் சரிபார்க்கவும்.");return}
+  loginPanel.classList.add("hidden");dashboard.classList.remove("hidden");$("logoutBtn").classList.remove("hidden");$("who").textContent=user.email||"நிர்வாகி";switchKind("news");
+ }catch(err){await signOut(auth);showMessage(loginMsg,"Admin அனுமதியைச் சரிபார்க்க முடியவில்லை: "+err.message)}
+});
+$("logoutBtn").addEventListener("click",()=>signOut(auth));
+$("tabs").addEventListener("click",e=>{const b=e.target.closest("button[data-kind]");if(b)switchKind(b.dataset.kind)});
+$("refreshBtn").addEventListener("click",loadRecords);
+$("cancelBtn").addEventListener("click",resetForm);
+$("dataForm").addEventListener("submit",async e=>{
+ e.preventDefault();if(currentKind==="users")return;
+ const data=formData();
+ try{
+  if(editingId)await updateDoc(doc(db,currentKind,editingId),{...data,updatedAt:serverTimestamp()});
+  else await addDoc(collection(db,currentKind),{...data,createdAt:serverTimestamp(),createdBy:currentUser.uid});
+  resetForm();showMessage(status,"வெற்றிகரமாகச் சேமிக்கப்பட்டது.");await loadRecords();
+ }catch(err){showMessage(status,"சேமிக்க முடியவில்லை: "+err.message)}
+});
+$("records").addEventListener("click",async e=>{
+ const edit=e.target.closest("[data-edit]"),del=e.target.closest("[data-delete]");
+ if(edit){try{const id=edit.dataset.edit,s=await getDoc(doc(db,currentKind,id));if(!s.exists())return;editingId=id;fieldsFor(currentKind);fillForm(s.data());$("formHeading").textContent="பதிவைத் திருத்து";$("saveBtn").textContent="மாற்றத்தைச் சேமி";window.scrollTo({top:0,behavior:"smooth"})}catch(err){showMessage(status,err.message)}}
+ if(del){const id=del.dataset.delete;if(!confirm("இந்த Firestore பதிவை நீக்கவா?"))return;try{await deleteDoc(doc(db,currentKind,id));showMessage(status,"பதிவு நீக்கப்பட்டது. Authentication கணக்கு நீக்கப்படவில்லை.");await loadRecords()}catch(err){showMessage(status,"நீக்க முடியவில்லை: "+err.message)}}
+});
+fieldsFor("news");
+</script>
+</body>
+</html>
