@@ -103,7 +103,7 @@ function fieldsFor(kind){
  for(const [name,label,type,required] of schemas[kind].fields){
    const lab=document.createElement("label");lab.htmlFor="f_"+name;lab.textContent=label;holder.append(lab);
    const input=type==="textarea"?document.createElement("textarea"):document.createElement("input");
-   input.id="f_"+name;input.name=name;input.type=type==="textarea"?"text":type;input.required=required;
+   input.id="f_"+name;if(type!=="textarea") input.type=type;input.name=name;input.required=required;
    holder.append(input);
  }
  $("editorPanel").classList.toggle("hidden",kind==="users");
