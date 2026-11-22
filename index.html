@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ta">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#b5121b">
+<title>கழகத் தோழன் | Kazhaga Thozhan</title>
+<style>
+:root{--red:#b5121b;--deep:#790b12;--black:#171717;--ink:#242424;--muted:#6b7280;--paper:#fff;--bg:#f5f5f6;--line:#e8e8eb}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:"Noto Sans Tamil","Latha",system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.65}
+a{color:inherit;text-decoration:none}.topline{background:var(--black);color:#eee;font-size:13px;padding:7px 5%;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+header{background:var(--paper);border-bottom:4px solid var(--red)}.head{max-width:1180px;margin:auto;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{display:flex;align-items:center;gap:14px}.logo{width:58px;height:58px;border-radius:50%;background:var(--red);display:grid;place-items:center;color:white;font-size:25px;font-weight:800;border:4px solid #f2d7d9;box-shadow:0 2px 8px #0002}.brand h1{font-size:clamp(22px,3vw,31px);line-height:1.25;margin:0;color:var(--black)}.brand p{margin:3px 0 0;color:var(--muted);font-size:13px}
+.login-link{background:var(--black);color:white;padding:10px 17px;border-radius:7px;font-weight:700;font-size:14px}
+nav{background:var(--red);color:white}.navinner{max-width:1180px;margin:auto;display:flex;align-items:center;padding:0 18px;gap:4px}.navinner a{padding:12px 15px;font-size:14px;font-weight:700}.navinner a:hover{background:var(--deep)}.menu{display:none;background:transparent;color:white;border:0;font-size:25px;padding:8px 12px}
+main{max-width:1180px;margin:24px auto;padding:0 18px}.hero{background:linear-gradient(115deg,#8d0c14,#c51b25 65%,#e14a50);color:white;border-radius:14px;padding:42px 38px;display:grid;grid-template-columns:1.5fr .8fr;gap:25px;align-items:center;box-shadow:0 8px 24px #8d0c1425}.hero h2{font-size:clamp(25px,4vw,38px);line-height:1.35;margin:0 0 12px}.hero p{margin:0 0 22px;color:#ffe9ea;max-width:650px}.hero .cta{display:inline-block;background:white;color:var(--red);font-weight:800;padding:10px 18px;border-radius:7px}.hero-art{min-height:160px;border:1px solid #ffffff55;border-radius:12px;background:#ffffff12;display:grid;place-items:center;text-align:center;padding:18px}.hero-art strong{font-size:27px;line-height:1.4}.hero-art span{font-size:12px;color:#ffe1e2}
+.section{margin-top:30px}.section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:14px}.section h2{font-size:22px;margin:0;color:var(--black)}.section-head small{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{background:white;border:1px solid var(--line);border-radius:11px;padding:18px;box-shadow:0 3px 12px #00000008}.tag{display:inline-block;background:#fff0f1;color:var(--red);font-size:12px;font-weight:800;padding:3px 9px;border-radius:20px}.card h3{margin:9px 0 6px;font-size:17px}.card p{margin:0;color:var(--muted);font-size:14px}.date{font-size:12px;color:#8b8b91;margin-top:12px}
+.member{display:flex;align-items:center;gap:12px}.avatar{width:48px;height:48px;border-radius:50%;background:#f3dadd;color:var(--red);display:grid;place-items:center;font-weight:800;font-size:19px;flex:none}.member h3{margin:0;font-size:15px}.member p{font-size:13px}
+.gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.photo{aspect-ratio:4/3;border-radius:10px;background:linear-gradient(135deg,#222,#555);color:white;display:grid;place-items:center;text-align:center;padding:12px;font-size:14px;font-weight:700}.photo:nth-child(2){background:linear-gradient(135deg,#8c1119,#d34a50)}.photo:nth-child(3){background:linear-gradient(135deg,#444,#999)}.photo:nth-child(4){background:linear-gradient(135deg,#a10e18,#282828)}
+.admin{display:grid;grid-template-columns:1fr 1fr;gap:18px}.admin-info{background:var(--black);color:white;border-radius:12px;padding:24px}.admin-info h2{margin:0 0 8px}.admin-info p{color:#ddd;margin:0}.login-box{background:white;border:1px solid var(--line);border-radius:12px;padding:22px}.login-box h3{margin:0 0 12px}.field{display:block;width:100%;padding:11px 12px;border:1px solid #d8d8dc;border-radius:7px;margin:8px 0 12px;font:inherit}.btn{border:0;background:var(--red);color:white;padding:11px 16px;border-radius:7px;font:inherit;font-weight:800;cursor:pointer}.hint{font-size:12px;color:var(--muted);margin-top:10px}.notice{display:none;margin-top:10px;padding:9px;border-radius:7px;background:#fff2e5;color:#7b3d00;font-size:13px}
+footer{margin-top:38px;background:var(--black);color:#ddd;padding:25px 18px;text-align:center;font-size:13px}footer strong{color:white}
+@media(max-width:760px){.head{padding:14px}.login-link{font-size:12px;padding:8px 10px}.navinner{display:none;flex-direction:column;align-items:stretch;padding:5px 12px}.navinner.open{display:flex}.navinner a{padding:10px}.menu{display:block;margin-left:auto}nav .bar{display:flex;align-items:center}.hero{grid-template-columns:1fr;padding:28px 22px}.hero-art{min-height:110px}.grid{grid-template-columns:1fr}.gallery{grid-template-columns:repeat(2,1fr)}.admin{grid-template-columns:1fr}.topline{font-size:11px}}
+</style>
+</head>
+<body>
+<div class="topline"><span>கழகத் தோழன் — தகவல் மற்றும் நிர்வாகத் தளம்</span><span>தமிழ் | தமிழ் இணையதளம்</span></div>
+<header><div class="head">
+ <div class="brand"><div class="logo">க</div><div><h1>கழகத் தோழன்</h1><p>KAZHAGA THOZHAN · ORGANIZATIONAL PORTAL</p></div></div>
+ <a class="login-link" href="#admin">நிர்வாகி உள்நுழைவு</a>
+</div></header>
+<nav><div class="bar"><button class="menu" aria-label="மெனு" onclick="document.querySelector('.navinner').classList.toggle('open')">☰</button></div>
+<div class="navinner"><a href="#home">முகப்பு</a><a href="#news">செய்திகள்</a><a href="#announcements">அறிவிப்புகள்</a><a href="#members">நிர்வாகிகள்</a><a href="#gallery">புகைப்படங்கள்</a><a href="#contact">தொடர்புக்கு</a></div></nav>
+<main id="home">
+<section class="hero"><div><h2>ஒன்றிணைவோம்!<br>தகவல்களைப் பகிர்வோம்!</h2><p>கழக அமைப்புச் செய்திகள், அறிவிப்புகள், நிர்வாகிகள் விவரங்கள் மற்றும் நிகழ்வுகளை ஒரே இடத்தில் அறிந்துகொள்ளும் தகவல் தளம்.</p><a class="cta" href="#news">சமீபத்திய தகவல்களைப் பார்க்க</a></div><div class="hero-art"><div><strong>கழகத் தோழன்</strong><br><span>தகவல் · ஒருங்கிணைப்பு · தொடர்பு</span></div></div></section>
+
+<section class="section" id="news"><div class="section-head"><h2>சமீபத்திய செய்திகள்</h2><small>Latest News</small></div><div class="grid">
+<article class="card"><span class="tag">செய்தி</span><h3>மாவட்ட மற்றும் ஒன்றியச் செய்திகள்</h3><p>உங்கள் பகுதியின் முக்கிய நிகழ்வுகள் மற்றும் செயல்பாடுகளை இங்கே வெளியிடலாம்.</p><div class="date">செய்தி விவரம் சேர்க்கப்பட வேண்டியுள்ளது</div></article>
+<article class="card"><span class="tag">நிகழ்வு</span><h3>நிகழ்ச்சி தகவல்கள்</h3><p>கூட்டங்கள், மக்கள் சந்திப்புகள் மற்றும் பொதுநிகழ்வுகளின் தகவல்களைப் பகிரலாம்.</p><div class="date">நிகழ்வு விவரம் சேர்க்கப்பட வேண்டியுள்ளது</div></article>
+<article class="card"><span class="tag">புதுப்பிப்பு</span><h3>அமைப்புச் செயல்பாடுகள்</h3><p>அமைப்பு சார்ந்த முக்கிய அறிவிப்புகள் மற்றும் புதுப்பிப்புகளை அறிந்துகொள்ளுங்கள்.</p><div class="date">புதுப்பிப்பு விவரம் சேர்க்கப்பட வேண்டியுள்ளது</div></article>
+</div></section>
+
+<section class="section" id="announcements"><div class="section-head"><h2>முக்கிய அறிவிப்புகள்</h2><small>Announcements</small></div><div class="card"><p>📌 புதிய அறிவிப்புகள், கூட்ட அழைப்புகள் மற்றும் நிகழ்ச்சி அட்டவணைகளை நிர்வாகி இங்கே சேர்க்கலாம்.</p></div></section>
+
+<section class="section" id="members"><div class="section-head"><h2>நிர்வாகிகள் பட்டியல்</h2><small>Organization Directory</small></div><div class="grid">
+<div class="card member"><div class="avatar">நி</div><div><h3>மாவட்ட நிர்வாகி</h3><p>பெயர் மற்றும் பொறுப்பு சேர்க்கப்பட வேண்டும்</p></div></div>
+<div class="card member"><div class="avatar">ஒ</div><div><h3>ஒன்றிய நிர்வாகி</h3><p>பெயர் மற்றும் பொறுப்பு சேர்க்கப்பட வேண்டும்</p></div></div>
+<div class="card member"><div class="avatar">ப</div><div><h3>பகுதி நிர்வாகி</h3><p>பெயர் மற்றும் பொறுப்பு சேர்க்கப்பட வேண்டும்</p></div></div>
+</div></section>
+
+<section class="section" id="gallery"><div class="section-head"><h2>புகைப்படத் தொகுப்பு</h2><small>Photo Gallery</small></div><div class="gallery"><div class="photo">நிகழ்ச்சி புகைப்படம் 1</div><div class="photo">மக்கள் சந்திப்பு</div><div class="photo">கூட்ட நிகழ்வு</div><div class="photo">சமூகப் பணி</div></div></section>
+
+<section class="section" id="admin"><div class="section-head"><h2>நிர்வாகி பகுதி</h2><small>Administrator</small></div><div class="admin"><div class="admin-info"><h2>நிர்வாகி உள்நுழைவு</h2><p>செய்திகள், அறிவிப்புகள், நிர்வாகிகள் பட்டியல் மற்றும் புகைப்படங்களை நிர்வகிக்க பயன்படும் பகுதி. உண்மையான கணக்கு மற்றும் பாதுகாப்பான உள்நுழைவுக்கு சர்வர் இணைப்பு தேவை.</p></div><form class="login-box" onsubmit="event.preventDefault();document.getElementById('notice').style.display='block'"><h3>உள்நுழைய</h3><label for="user">பயனர் பெயர்</label><input class="field" id="user" autocomplete="username" placeholder="பயனர் பெயர்"><label for="pass">கடவுச்சொல்</label><input class="field" id="pass" type="password" autocomplete="current-password" placeholder="கடவுச்சொல்"><button class="btn" type="submit">உள்நுழைவு</button><div class="notice" id="notice">இது மாதிரி வடிவமைப்பு மட்டுமே. உண்மையான உள்நுழைவுக்கு பாதுகாப்பான backend அமைக்க வேண்டும்.</div><p class="hint">குறிப்பு: இந்த மாதிரி பக்கத்தில் உண்மையான உள்நுழைவு செயல்பாடு இல்லை.</p></form></div></section>
+
+<section class="section" id="contact"><div class="card"><h2>தொடர்புக்கு</h2><p>தள நிர்வாகியின் தொடர்பு விவரங்கள் இங்கே சேர்க்கப்பட வேண்டும்.</p></div></section>
+</main>
+<footer><strong>கழகத் தோழன்</strong><br>அமைப்புத் தகவல்களுக்கான இணையதள மாதிரி · © 2026</footer>
+</body></html>
